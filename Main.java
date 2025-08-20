@@ -13,6 +13,9 @@ public class Main {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
+        // 🔑 Make sure GamePanel can receive key events
+        gamePanel.requestFocusInWindow();
+
         gamePanel.startGameThread();
     }
 }
