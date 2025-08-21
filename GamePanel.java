@@ -43,31 +43,61 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread = new Thread(this);
         gameThread.start(); // starts the game loop
     }
-     
+     //SLEEP METHOD 
     @Override
-    public void run() {
-        double drawInterval = 1000000000/FPS; // in nanoseconds
-        double nextDrawTime = System.nanoTime() + drawInterval;
+    // public void run() {
+    //     double drawInterval = 1000000000/FPS; // in nanoseconds
+    //     double nextDrawTime = System.nanoTime() + drawInterval;
 
-        while(gameThread != null) {
+    //     while(gameThread != null) {
           
-            //1. UPDATE INFORMATION SUCH AS PLAYER POSITION
-            update();
-            //2. DRAW SCREEN USING UPDATE INFORMATION
+    //         //1. UPDATE INFORMATION SUCH AS PLAYER POSITION
+    //         update();
+    //         //2. DRAW SCREEN USING UPDATE INFORMATION
 
-            repaint(); //its confusing but you call paintcomponent() like this
+    //         repaint(); //its confusing but you call paintcomponent() like this
             
 
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000; // convert to milliseconds
-                if(remainingTime < 0) remainingTime = 0;
+    //         try {
+    //             double remainingTime = nextDrawTime - System.nanoTime();
+    //             remainingTime = remainingTime/1000000; // convert to milliseconds
+    //             if(remainingTime < 0) remainingTime = 0;
 
-                Thread.sleep((long) remainingTime); // convert to milliseconds
+    //             Thread.sleep((long) remainingTime); // convert to milliseconds
 
-                nextDrawTime += drawInterval;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    //             nextDrawTime += drawInterval;
+    //         } catch (InterruptedException e) {
+    //             e.printStackTrace();
+    //         }
+    //     }
+    // }
+
+    // DELTA/ACCUMULATOR METHOD
+    public void run(){
+        double drawInterval = 1000000000/FPS; // in nanoseconds
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int drawCount = 0;
+
+        while(gameThread != null) {
+            currentTime = System.nanoTime();
+
+            delta += (currentTime - lastTime) / drawInterval;
+            timer += currentTime - lastTime;
+            lastTime = currentTime;
+
+            if(delta>=1) {
+                update();
+                repaint();
+                delta--;
+                drawCount++;
+            }
+            if(timer>=100000000) {
+                System.out.println("FPS: " + drawCount);
+                drawCount = 0;
+                timer = 0;
             }
         }
     }
