@@ -1,85 +1,98 @@
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Color;
 
 import javax.swing.JPanel;
-public class GamePanel extends JPanel implements Runnable{
 
-    // screen setting
-    final int originalTileSize = 16; // it means 16 x 16 tile
-    final int scale = 3;
+public class GamePanel extends JPanel implements Runnable {
 
-    final int tileSize = originalTileSize * scale; // 48 x 48 tile
+    // screen settings
+    final int originalTileSize = 16; // 16 x 16 pixel
+    final int scale = 3; // 3x scaling
+
+    final int tileSize = originalTileSize * scale; // 48 x 48 pixel
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol; // 768 px
-    final int screenHeight = tileSize * maxScreenRow; // 576 px
-    KeyHandler keyH = new KeyHandler();
 
-    Thread gameThread;
+    final int screenWidth = tileSize * maxScreenCol; // 768 pixels
+    final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    // set player position
+    //FPS
+    int FPS = 60;
+    long period = 1000000000 / FPS; // period in nanoseconds
+    KeyHandler keyH = new KeyHandler(); // instance of KeyHandler to handle key events
+    Thread gameThread; // thread for game loop
+
+    // players default position
     int playerX = 100;
     int playerY = 100;
+    int playerSpeed = 4;
+    // Constructor
 
-    int playerSpeed  = 4;
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLACK);
-        this.setDoubleBuffered(true);
+        this.setFocusable(true); // allows the panel to receive key events
+        // Add KeyListener here if needed, e.g., new KeyHandler()
         this.addKeyListener(keyH);
-        this.setFocusable(true); // it means this panel can receive key events
-        
-
+        this.setFocusable(true);
     }
 
-    public void startGameThread(){
-
+    public void startGameThread() {
         gameThread = new Thread(this);
-        gameThread.start();  
+        gameThread.start(); // starts the game loop
     }
+     
     @Override
     public void run() {
-        //game loop
-        while(gameThread != null){
-            // System.out.println("The Game loop is running ");
-            // 1. update information for example players position
-            update();
-            // 2. draw the screen based on the updated information
-            repaint(); // its confusing but thats how you call paintComponent method in java
+        double drawInterval = 1000000000/FPS; // in nanoseconds
+        double nextDrawTime = System.nanoTime() + drawInterval;
 
+        while(gameThread != null) {
+          
+            //1. UPDATE INFORMATION SUCH AS PLAYER POSITION
+            update();
+            //2. DRAW SCREEN USING UPDATE INFORMATION
+
+            repaint(); //its confusing but you call paintcomponent() like this
+            
+
+            try {
+                double remainingTime = nextDrawTime - System.nanoTime();
+                remainingTime = remainingTime/1000000; // convert to milliseconds
+                if(remainingTime < 0) remainingTime = 0;
+
+                Thread.sleep((long) remainingTime); // convert to milliseconds
+
+                nextDrawTime += drawInterval;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void update(){
-        if(keyH.upPressed == true) {
-            playerY -= playerSpeed; // in java y value decreases as you go up
+        if(keyH.upPressed) {
+            playerY -= playerSpeed; // move up
         }
-        else if(keyH.downPressed == true) { // in java y value increases as you go down
-            playerY += playerSpeed;
+        else if(keyH.downPressed) {
+            playerY += playerSpeed; // move down
         }
-        else if(keyH.leftPressed == true) {
-            playerX -= playerSpeed;
+        else if(keyH.leftPressed) {
+            playerX -= playerSpeed; // move left
         }
-        else if(keyH.rightPressed == true) {
-            playerX += playerSpeed;
+        else if(keyH.rightPressed) {
+            playerX += playerSpeed; // move right
         }
-
     }
-
-    // paintComponent is statndard methods in java means buildin method to draw things on screen
-    // its like our pencil or brush to draw sth
-    public void paintComponent(Graphics g){
-        // graphics is a class that has many functions to draw on screen
-        
-        super.paintComponent(g);    // calls tha parent class to work on screen
-
-        Graphics2D g2 = (Graphics2D) g; // we can use Graphics2D to draw more complex shapes
-
-        g2.setColor(Color.WHITE);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
-        g2.dispose(); //dispose  is like closing a file after reading/writing on it
-
+// paintcomponenet is like pen or brush to draw sth
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Draw the game elements here
+        Graphics2D g2 = (Graphics2D) g; // cast to Graphics2D for more control
+        g2.setColor(Color.white);
+        g2.fillRect(playerX, playerY, tileSize , tileSize);
+        g2.dispose(); // release resources
     }
 }

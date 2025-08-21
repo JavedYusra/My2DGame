@@ -1,21 +1,19 @@
 import javax.swing.JFrame;
 
 public class Main {
+ 
     public static void main(String[] args) {
+        
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
+        window.setTitle("2D Adventure");
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
         window.pack();
-
-        window.setLocationRelativeTo(null);
+        window.setLocationRelativeTo(null); // center the window on the screen
         window.setVisible(true);
-
-        // 🔑 Make sure GamePanel can receive key events
-        gamePanel.requestFocusInWindow();
-
         gamePanel.startGameThread();
     }
-}
+ }
