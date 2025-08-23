@@ -1,9 +1,14 @@
+package main;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 
+
 import javax.swing.JPanel;
+import entity.Player;
+
+
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -11,19 +16,19 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16; // 16 x 16 pixel
     final int scale = 3; // 3x scaling
 
-    final int tileSize = originalTileSize * scale; // 48 x 48 pixel
+    public int tileSize = originalTileSize * scale; // 48 x 48 pixel
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
 
     final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
-    //FPS
+    //FPS  
     int FPS = 60;
     long period = 1000000000 / FPS; // period in nanoseconds
     KeyHandler keyH = new KeyHandler(); // instance of KeyHandler to handle key events
     Thread gameThread; // thread for game loop
-
+    Player player = new Player(this, keyH);
     // players default position
     int playerX = 100;
     int playerY = 100;
@@ -103,26 +108,14 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update(){
-        if(keyH.upPressed) {
-            playerY -= playerSpeed; // move up
-        }
-        else if(keyH.downPressed) {
-            playerY += playerSpeed; // move down
-        }
-        else if(keyH.leftPressed) {
-            playerX -= playerSpeed; // move left
-        }
-        else if(keyH.rightPressed) {
-            playerX += playerSpeed; // move right
-        }
+        player.update();
     }
 // paintcomponenet is like pen or brush to draw sth
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the game elements here
         Graphics2D g2 = (Graphics2D) g; // cast to Graphics2D for more control
-        g2.setColor(Color.white);
-        g2.fillRect(playerX, playerY, tileSize , tileSize);
+        player.draw(g2);
         g2.dispose(); // release resources
     }
 }
