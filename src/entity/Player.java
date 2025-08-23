@@ -30,7 +30,6 @@ public class Player extends Entity {
 
     public void getPlayerImage() {
         try {
-            System.out.println(getClass().getResource("/res/player/boy_down_1.png"));
 
             down1 = ImageIO.read(getClass().getResourceAsStream("/res/player/boy_down_1.png"));
             down2 = ImageIO.read(getClass().getResourceAsStream("/res/player/boy_down_2.png"));
@@ -61,6 +60,16 @@ public class Player extends Entity {
             direction = "right";
             x += speed; // move right
         }
+
+        spriteCounter++;
+        if (spriteCounter > 12) {
+            if (spriteNum == 1) {
+                spriteNum = 2;
+            } else if (spriteNum == 2) {
+                spriteNum = 1;
+            }
+            spriteCounter = 0;
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -71,16 +80,33 @@ public class Player extends Entity {
 
         switch (direction) {
             case "up":
-                image = up1;
-                break;
+                if (spriteNum == 1) {
+                    image = up1;
+                    break;
+                } else if (spriteNum == 2) {
+                    image = up2;
+                    break;
+                }
             case "down":
-                image = down1;
+                if (spriteNum == 1) {
+                    image = down1;
+                } else if (spriteNum == 2) {
+                    image = down2;
+                }
                 break;
             case "left":
-                image = left1;
+                if (spriteNum == 1) {
+                    image = left1;
+                } else if (spriteNum == 2) {
+                    image = left2;
+                }
                 break;
             case "right":
-                image = right1;
+                if (spriteNum == 1) {
+                    image = right1;
+                } else if (spriteNum == 2) {
+                    image = right2;
+                }
                 break;
         }
         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
