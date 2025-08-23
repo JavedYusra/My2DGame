@@ -1,4 +1,7 @@
 {
   "java.project.sourcePaths": ["src"],
-  "java.project.resourcePaths": ["src/res"]
+  "java.project.resourcePaths": ["src/res"],
+  "java.project.resources": [
+    "src/res"
+  ]
 }
