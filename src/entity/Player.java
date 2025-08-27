@@ -2,6 +2,7 @@ package entity; // (only if your Player is in entity package, adjust if differen
 
 import main.GamePanel;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -22,6 +23,9 @@ public class Player extends Entity {
         this.keyH = keyH;
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
+
+        solidArea = new Rectangle(8,16,32,32);
+
         setDefaultValues();
         getPlayerImage();
     }
@@ -54,16 +58,32 @@ public class Player extends Entity {
         if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
             if (keyH.upPressed == true) {
                 direction = "up";
-                worldY -= speed;
             } else if (keyH.downPressed == true) {
                 direction = "down";
-                worldY += speed;
             } else if (keyH.leftPressed == true) {
                 direction = "left";
-                worldX -= speed;
             } else if (keyH.rightPressed == true) {
                 direction = "right";
-                worldX += speed;
+            }
+            //check tile collision
+            collisionOn = false;
+            gp.checker.checkTile(this);
+            // IF COLLISION IS FALSE, PLAYER CAN MOVE
+            if(collisionOn == false) {
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
             }
 
             spriteCounter++;
