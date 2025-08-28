@@ -1,7 +1,7 @@
 package main;
 
 import entity.Entity;
-
+//collision checker is used for
 public class CollisionChecker {
 
     GamePanel gp;
