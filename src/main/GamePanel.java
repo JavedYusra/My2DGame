@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 
@@ -37,7 +38,11 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(); // instance of KeyHandler to handle key events
     Thread gameThread; // thread for game loop
     public CollisionChecker checker = new CollisionChecker(this);
+    public AssetSetter aSetter = new AssetSetter(this);
     public Player player = new Player(this, keyH);
+    public SuperObject obj[] = new SuperObject[10];
+
+
     // // players default position
     // int playerX = 100;
     // int playerY = 100;
@@ -51,6 +56,10 @@ public class GamePanel extends JPanel implements Runnable {
         // Add KeyListener here if needed, e.g., new KeyHandler()
         this.addKeyListener(keyH);
         this.setFocusable(true);
+    }
+
+    public void setupGame(){
+        aSetter.setObject();
     }
 
     public void startGameThread() {
@@ -124,7 +133,15 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
         // Draw the game elements here
         Graphics2D g2 = (Graphics2D) g; // cast to Graphics2D for more control
+        //tile
         tileM.draw(g2);
+        //object
+        for(int i = 0; i < obj.length; i++){
+            if(obj[i] != null){
+                obj[i].draw(g2, this);
+            }
+        }
+        //player
         player.draw(g2);
         g2.dispose(); // release resources
     }
