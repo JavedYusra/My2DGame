@@ -1,4 +1,5 @@
 package main;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -9,6 +10,7 @@ import javax.swing.JPanel;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
+
 
 
 
@@ -36,10 +38,14 @@ public class GamePanel extends JPanel implements Runnable {
    
     TileManager tileM = new TileManager(this);
     KeyHandler keyH = new KeyHandler(); // instance of KeyHandler to handle key events
-    Sound sound = new Sound();
-    Thread gameThread; // thread for game loop
+    Sound music = new Sound();
+    Sound se = new Sound();
     public CollisionChecker checker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
+
+    public UI ui = new UI(this);
+    Thread gameThread; // thread for game loop
+
 
 
     //entity and object
@@ -148,22 +154,25 @@ public class GamePanel extends JPanel implements Runnable {
         }
         //player
         player.draw(g2);
+
+        //ui
+        ui.draw(g2);
         g2.dispose(); // release resources
     }
 
     public void playMusic(int i){
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
 
     }
 
     public void stopMusic(){
-        sound.stop();
+        music.stop();
     }
     public void playSE(int i){
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 
     
