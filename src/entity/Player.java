@@ -19,14 +19,13 @@ public class Player extends Entity {
     public final int screenY;
     int hasKey = 0;
 
-
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
         this.keyH = keyH;
-        screenX = gp.screenWidth/2 - (gp.tileSize/2);
-        screenY = gp.screenHeight/2 - (gp.tileSize/2);
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
-        solidArea = new Rectangle(8,16,32,32);
+        solidArea = new Rectangle(8, 16, 32, 32);
         SolidAreaDefaultX = solidArea.x;
         SolidAreaDefaultY = solidArea.y;
 
@@ -36,7 +35,7 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
-        worldY = gp.tileSize*21;
+        worldY = gp.tileSize * 21;
         speed = 4;
         direction = "down";
     }
@@ -59,7 +58,8 @@ public class Player extends Entity {
     }
 
     public void update() {
-        if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+        if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true
+                || keyH.rightPressed == true) {
             if (keyH.upPressed == true) {
                 direction = "up";
             } else if (keyH.downPressed == true) {
@@ -69,14 +69,14 @@ public class Player extends Entity {
             } else if (keyH.rightPressed == true) {
                 direction = "right";
             }
-            //check tile collision
+            // check tile collision
             collisionOn = false;
             gp.checker.checkTile(this);
-            //check object collision
+            // check object collision
             int objIndex = gp.checker.checkObject(this, true);
             pickUpObject(objIndex);
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
-            if(collisionOn == false) {
+            if (collisionOn == false) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -104,27 +104,36 @@ public class Player extends Entity {
             }
         }
     }
-    public void pickUpObject(int i){
-        if(i != 999){
+
+    public void pickUpObject(int i) {
+        if (i != 999) {
             String objectName = gp.obj[i].name;
-            switch(objectName){
+            switch (objectName) {
                 case "Key":
-                hasKey++;
-                gp.obj[i] = null;
-                System.out.println("KEy" + hasKey);
-                break;
-                case "Door":
-                if(hasKey > 0){
-                  
+                gp.playSE(1);
+                    hasKey++;
                     gp.obj[i] = null;
-                      hasKey--;
-                }
-                System.out.println("Key" + hasKey);
-                break;
+                    System.out.println("KEy" + hasKey);
+                    break;
+                case "Door":
+                    if (hasKey > 0) {
+                        gp.playSE(3);
+                        gp.obj[i] = null;
+                        hasKey--;
+                    }
+                    System.out.println("Key" + hasKey);
+                    break;
+
+                case "Boots":
+                gp.playSE(2);
+                    speed += 1;
+                    gp.obj[i] = null;
+                    break;
             }
         }
 
     }
+
     public void draw(Graphics2D g2) {
         // g2.setColor(Color.white);
         // g2.fillRect(x, y, gp.tileSize , gp.tileSize);

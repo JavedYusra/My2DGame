@@ -3,5 +3,6 @@
   "java.project.resourcePaths": ["src/res"],
   "java.project.resources": [
     "src/res"
-  ]
+  ],
+  "git.ignoreLimitWarning": true
 }
